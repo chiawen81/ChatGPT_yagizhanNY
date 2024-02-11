@@ -1,29 +1,28 @@
 <div
-  id="chat-content-container"
-  class="flex justify-between min-h-screen flex-col md:pl-[320px]"
->
+     id="chat-content-container"
+     class="flex justify-between min-h-screen flex-col md:pl-[320px]">
+  <!-- 測試高亮語法用 -->
+  <!-- <div class="prose prose-invert" [innerHTML]="parsedHtmlForTest | safeHtml"></div> -->
   <div id="mainChatContainer" *ngIf="messages.length > 0">
     <div *ngFor="let message of messages" class="mx-5 text-white">
       <div *ngIf="message.content !== null">
         <div
-          [class]="
+             [class]="
             'flex items-start p-5 ' +
             (message.role === 'user' ? 'bg-[#40414E]' : '')
-          "
-        >
+          ">
           <img
-            height="50"
-            width="50"
-            [src]="
+               height="50"
+               width="50"
+               [src]="
               message.role === 'assistant'
                 ? '../../assets/img/chatgpt.jpg'
                 : '../../assets/img/user.png'
             "
-            class="rounded-full mr-10"
-            alt="user_photo"
-          />
+               class="rounded-full mr-10"
+               alt="user_photo" />
           <div class="align-middle">
-            <div class="prose prose-invert" [innerHTML]="message.content"></div>
+            <div class="prose prose-invert" [innerHTML]="message.content | safeHtml"></div>
           </div>
         </div>
       </div>
@@ -41,29 +40,25 @@
   </div>
   <div class="flex mx-5 p-4">
     <textarea
-      class="w-full p-3 bg-[#40414E] text-white rounded-l-md resize-none focus:outline-none"
-      placeholder="Type something..."
-      rows="1"
-      name="textInput"
-      #textInput
-      (keyup.enter)="createCompletion(textInput)"
-      [disabled]="apiKey === null || apiKey === ''"
-    ></textarea>
+              class="w-full p-3 bg-[#40414E] text-white rounded-l-md resize-none focus:outline-none"
+              placeholder="Type something..."
+              rows="1"
+              name="textInput"
+              #textInput
+              (keyup.enter)="createCompletion(textInput)"
+              [disabled]="apiKey === null || apiKey === ''"></textarea>
     <button
-      [disabled]="apiKey === null || apiKey === ''"
-      class="bg-[#40414E] p-3 rounded-r-md"
-      type="button"
-    >
+            [disabled]="apiKey === null || apiKey === ''"
+            class="bg-[#40414E] p-3 rounded-r-md"
+            type="button">
       <i
-        *ngIf="isBusy === false"
-        (click)="createCompletion(textInput)"
-        class="fa-regular fa-paper-plane text-white"
-      ></i>
+         *ngIf="isBusy === false"
+         (click)="createCompletion(textInput)"
+         class="fa-regular fa-paper-plane text-white"></i>
       <div
-        *ngIf="isBusy === true"
-        class="inline-block h-5 w-5 text-white animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-        role="status"
-      >
+           *ngIf="isBusy === true"
+           class="inline-block h-5 w-5 text-white animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+           role="status">
         <span class="sr-only">Loading...</span>
       </div>
     </button>

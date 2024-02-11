@@ -1,4 +1,3 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -20,16 +19,60 @@ $open-ai-web-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$open-ai-web-theme: mat.define-light-theme((
-  color: (
-    primary: $open-ai-web-primary,
-    accent: $open-ai-web-accent,
-    warn: $open-ai-web-warn,
-  )
-));
+$open-ai-web-theme: mat.define-light-theme((color: (primary: $open-ai-web-primary,
+        accent: $open-ai-web-accent,
+        warn: $open-ai-web-warn,
+      )));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($open-ai-web-theme);
 
+
+// highlightJS 高亮語法樣式
+@import '~highlight.js/styles/monokai-sublime.min.css';
+
+.hljs-title.function_,
+.hljs-variable {
+  color: #f9f5ab;
+}
+
+.hljs-comment {
+  color: #70a45c;
+}
+
+.hljs-deletion,
+.hljs-meta,
+.hljs-built_in {
+  color: #4dc8b0;
+}
+
+.hljs-variable,
+.hljs-title,
+.hljs-literal,
+.hljs-name {
+  color: #5ba4e3;
+}
+
+// .hljs-keyword {
+//   color: #e994e2;
+// }
+
+.hljs-string {
+  color: #e49a7c;
+}
+
+.hljs-selector-tag,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: #e2c17a;
+}
+
+.hljs,
+.hljs-attr,
+.hljs-property,
+.hljs-number,
+.hljs-attribute {
+  color: #8cdbff;
+}

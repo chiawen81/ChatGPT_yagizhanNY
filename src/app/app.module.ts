@@ -20,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SafeHtmlPipe } from './pipe/safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     SidebarComponent,
     ChatContentComponent,
     UserDialogComponent,
+    SafeHtmlPipe,
   ],
   imports: [
     EffectsModule.forRoot([]),
@@ -49,4 +51,4 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   bootstrap: [AppComponent],
   entryComponents: [UserDialogComponent],
 })
-export class AppModule {}
+export class AppModule { }
