@@ -45,7 +45,9 @@
               rows="1"
               name="textInput"
               #textInput
-              (keyup.enter)="createCompletion(textInput)"
+              (compositionstart)="onCompositionStart()"
+              (compositionend)="onCompositionEnd()"
+              (keydown)="onEnterPress($event, textInput)"
               [disabled]="apiKey === null || apiKey === ''"></textarea>
     <button
             [disabled]="apiKey === null || apiKey === ''"

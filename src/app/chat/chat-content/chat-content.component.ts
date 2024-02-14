@@ -21,8 +21,20 @@ import hljs from 'highlight.js';
 })
 export class ChatContentComponent
   implements OnInit, AfterViewChecked, AfterViewInit {
+  @ViewChild('window') window!: any;
+  @ViewChild('textInput', { static: true }) textInputRef!: ElementRef;
+
+  messages: ChatCompletionRequestMessage[] = [];
+  apiKey: string | null = '';
+  isBusy: boolean = false;
+  currChatSelected: string = '';
+  isComposing = false; // 用來標示是否正在選字
+
   // // 測試高亮語法用
   // parsedHtmlForTest;
+
+
+
   constructor(
     private chatService: ChatService,
     private markdownService: MarkdownService,
@@ -36,12 +48,7 @@ export class ChatContentComponent
 
   }
 
-  @ViewChild('window') window!: any;
-  public messages: ChatCompletionRequestMessage[] = [];
-  apiKey: string | null = '';
-  isBusy: boolean = false;
-  currChatSelected: string = '';
-  @ViewChild('textInput', { static: true }) textInputRef!: ElementRef;
+
 
   ngOnInit(): void {
     this.scrollToBottom();
@@ -74,6 +81,7 @@ export class ChatContentComponent
       element.value = '';
       return;
     }
+
     element.value = '';
     const message: ChatCompletionRequestMessage = {
       role: 'user',
@@ -112,6 +120,27 @@ export class ChatContentComponent
     this.chatService.setMessagesSubject(this.messages);
     this.isBusy = false;
     this.scrollToBottom();
+  }
+
+
+  // 捕獲到輸入框事件（開始）
+  onCompositionStart() {
+    this.isComposing = true; // 開始選字時設置為 true
+  }
+
+
+  // 捕獲到輸入框事件（結束）
+  onCompositionEnd() {
+    this.isComposing = false; // 選字結束時設置為 false
+  }
+
+
+
+  onEnterPress(event: KeyboardEvent, textInput: HTMLTextAreaElement) {
+    if (event.key === 'Enter' && !this.isComposing) {
+      event.preventDefault(); // 阻止預設的 enter 行為
+      this.createCompletion(textInput);
+    };
   }
 
 
