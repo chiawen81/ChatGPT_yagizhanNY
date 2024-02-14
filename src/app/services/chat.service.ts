@@ -7,6 +7,8 @@ import { ChatDataService } from './chat-data.service';
   providedIn: 'root',
 })
 export class ChatService {
+  static currentChatModelName: string = 'gpt4';
+
   openai!: OpenAIApi;
 
   messages: ChatCompletionRequestMessage[] = [];
@@ -29,7 +31,9 @@ export class ChatService {
   async createCompletionViaOpenAI(messages: ChatCompletionRequestMessage[]) {
     return await this.openai.createChatCompletion(
       {
-        model: 'gpt-3.5-turbo',
+        model: this.getGPTModelName(
+          ChatService.currentChatModelName
+        ),
         messages: messages,
       },
       {
@@ -44,7 +48,9 @@ export class ChatService {
   async getTitleFromChatGpt(messages: ChatCompletionRequestMessage[]) {
     return await this.openai.createChatCompletion(
       {
-        model: 'gpt-3.5-turbo',
+        model: this.getGPTModelName(
+          ChatService.currentChatModelName
+        ),
         messages: [
           {
             role: 'user',
@@ -69,5 +75,20 @@ export class ChatService {
 
   public getMessagesSubject(): Observable<ChatCompletionRequestMessage[]> {
     return this.messagesSubject.asObservable();
+  }
+
+
+
+  // 取得GPT模式名稱
+  getGPTModelName(modelNameViewInWeb: string): string {
+    let gptModelName: string = '';
+
+    switch (modelNameViewInWeb) {
+      case 'gpt3.5': gptModelName = 'gpt-3.5-turbo'; break;
+      case 'gpt4': gptModelName = 'gpt-4-1106-preview'; break;
+      default: gptModelName = 'gpt-3.5-turbo'; break;
+    };
+
+    return gptModelName;
   }
 }

@@ -1,3 +1,4 @@
+import { ChatDataService } from './../../services/chat-data.service';
 import {
   AfterViewChecked,
   AfterViewInit,
@@ -7,12 +8,11 @@ import {
   ElementRef,
 } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
-import { MarkdownService } from 'ngx-markdown';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiKeyService } from 'src/app/services/api-key.service';
 import { ChatCompletionRequestMessage } from 'openai';
-import { DomSanitizer } from '@angular/platform-browser';
 import hljs from 'highlight.js';
+import ChatHistories from 'src/app/shared/models/chat-histories.model';
 
 @Component({
   selector: 'app-chat-content',
@@ -25,30 +25,20 @@ export class ChatContentComponent
   @ViewChild('textInput', { static: true }) textInputRef!: ElementRef;
 
   messages: ChatCompletionRequestMessage[] = [];
+  chatHistories: ChatHistories = {
+    chatHistoryDetails: [],
+  };
   apiKey: string | null = '';
   isBusy: boolean = false;
-  currChatSelected: string = '';
   isComposing = false; // 用來標示是否正在選字
-
-  // // 測試高亮語法用
-  // parsedHtmlForTest;
-
-
+  planToUseModelName: string = "gpt4";
+  currentPageModelName: string = ChatService.currentChatModelName;
 
   constructor(
     private chatService: ChatService,
-    private markdownService: MarkdownService,
     private apiKeyService: ApiKeyService,
-    private snackBar: MatSnackBar,
-    private sanitizer: DomSanitizer
-  ) {
-    // // 測試高亮程式碼
-    // let test123 = "```typescript\nimport { Pipe, PipeTransform } from '@angular/core';\nimport { DomSanitizer, SafeHtml } from '@angular/platform-browser';\n\n@Pipe({  name: 'safeHtml' })\nexport class SafeHtmlPipe implements PipeTransform {\n\nconstructor(private sanitizer: DomSanitizer) {\nconsole.log(789655,` class='${ cls }'`);\n  for (var i = 0 / 2; i < classes.length; i++) {\nif (checkCondition(classes[i]) === undefined)\n}\n }\n\ntransform(html: string):\n\nSafeHtml {  \n  return this.sanitizer.bypassSecurityTrustHtml(html); \n  } \n}```";
-    // this.parsedHtmlForTest = this.parseApiResponse(test123);
-
-  }
-
-
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.scrollToBottom();
@@ -56,6 +46,8 @@ export class ChatContentComponent
     // Subscribe to messages
     this.chatService.getMessagesSubject().subscribe((messages) => {
       this.messages = messages;
+      this.currentPageModelName = ChatService.currentChatModelName;
+      console.log('初始化content-message', messages);
     });
 
     // Subscribe to the api key.
@@ -63,6 +55,13 @@ export class ChatContentComponent
       this.apiKey = apiKey;
     });
   }
+
+  // 更新當前頁面聊天模型
+  updateChatModel() {
+    console.log('focused-當前頁面聊天模型', ChatService.currentChatModelName);
+    this.currentPageModelName = ChatService.currentChatModelName;
+  }
+
 
   ngAfterViewInit() {
     this.textInputRef.nativeElement.focus();
@@ -72,6 +71,14 @@ export class ChatContentComponent
     this.scrollToBottom();
   }
 
+  // 取得歷史訊息
+  getHistoryChatMessages(id: string) {
+    const history = this.chatHistories.chatHistoryDetails.find(
+      (c) => c.id === id
+    );
+    console.log('history', history);
+    ChatService.currentChatModelName = history?.modelNameViewInWeb!;
+  };
 
 
   // 整理api response
@@ -181,7 +188,11 @@ export class ChatContentComponent
     return hljs.highlight(code, { language: validLanguage }).value;
   }
 
-
+  // 切換模式
+  toggleModel() {
+    this.planToUseModelName = (this.planToUseModelName === 'gpt3.5') ? 'gpt4' : 'gpt3.5';
+    ChatService.currentChatModelName = this.planToUseModelName;
+  }
 
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);

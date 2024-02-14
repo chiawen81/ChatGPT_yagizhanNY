@@ -4,4 +4,5 @@ export interface ChatHistoryDetails {
   id: string;
   title: string;
   messages: ChatCompletionRequestMessage[];
+  modelNameViewInWeb: string;
 }

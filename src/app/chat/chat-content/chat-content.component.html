@@ -1,9 +1,8 @@
 <div
      id="chat-content-container"
-     class="flex justify-between min-h-screen flex-col md:pl-[320px]">
-  <!-- 測試高亮語法用 -->
-  <!-- <div class="prose prose-invert" [innerHTML]="parsedHtmlForTest | safeHtml"></div> -->
+     class="flex justify-between min-h-screen flex-col md:pl-[320px]" (click)="updateChatModel()">
   <div id="mainChatContainer" *ngIf="messages.length > 0">
+    <span class="mx-5 my-3 block text-white">本對話窗使用：{{currentPageModelName}}</span>
     <div *ngFor="let message of messages" class="mx-5 text-white">
       <div *ngIf="message.content !== null">
         <div
@@ -29,10 +28,24 @@
     </div>
   </div>
   <div *ngIf="messages.length === 0">
-    <div [class]="'justify-center flex items-center p-5'">
-      <h1 *ngIf="apiKey" [class]="'text-white'">
-        Please start typing some prompt...
-      </h1>
+    <div [class]="'justify-center flex items-center p-5 flex-col'">
+      <ng-container *ngIf="apiKey">
+        <div (click)="toggleModel()" class="group flex items-center p-2 rounded-lg bg-gray-100 hover:bg-pink-400 text-pink-400 hover:text-black cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="fill-black">
+            <path d="M280-120 80-320l200-200 57 56-104 104h607v80H233l104 104-57 56Zm400-320-57-56 104-104H120v-80h607L623-784l57-56 200 200-200 200Z" />
+          </svg>
+          <span class="ml-3">
+            <span class="">
+              新對話框預計使用 {{planToUseModelName}}<br>
+            </span>
+            <span class="">點擊以切換模型</span>
+          </span>
+        </div>
+        <br>
+        <h1 [class]="'text-white'">
+          Please start typing some prompt...
+        </h1>
+      </ng-container>
       <h1 *ngIf="apiKey === null || apiKey === ''" [class]="'text-white'">
         Please enter your API Key...
       </h1>
